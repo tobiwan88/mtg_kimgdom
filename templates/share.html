@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Game Created — Commander Kingdom{% endblock %}
+
+{% block head %}
+<script>
+  function copyLink() {
+    navigator.clipboard.writeText(
+      document.getElementById("join-url").textContent.trim()
+    );
+    const msg = document.getElementById("copied");
+    msg.style.display = "block";
+    setTimeout(() => { msg.style.display = "none"; }, 2000);
+  }
+
+  function refreshCount() {
+    fetch("{{ url_for('api_status', game_id=game_id) }}")
+      .then((r) => r.json())
+      .then((d) => {
+        document.getElementById("joined-count").textContent = d.joined;
+        document.getElementById("total-count").textContent = d.total;
+        if (d.locked) {
+          document.getElementById("waiting-msg").innerHTML =
+            "<strong>All players have joined!</strong> The game is locked.";
+        }
+      });
+  }
+
+  setInterval(refreshCount, 3000);
+</script>
+{% endblock %}
+
+{% block content %}
+  <h2>Your Secret Role</h2>
+
+  <div
+    class="role-card"
+    style="--role-color: {{ role.color }}; --role-border: {{ role.border }}"
+  >
+    <div class="role-header">
+      <span class="role-icon">{{ role.icon }}</span>
+      <div>
+        <span class="role-name">{{ role_name }}</span>
+        {% if role.public %}
+          <span class="badge-public">PUBLIC</span>
+        {% endif %}
+        <div class="role-team">{{ role.team }}</div>
+      </div>
+    </div>
+
+    <p class="role-desc">{{ role.description | safe }}</p>
+    <p class="role-win"><strong>Victory:</strong> {{ role.win }}</p>
+    {% if role.life %}
+      <p class="role-life">
+        <strong>Starting life:</strong> {{ role.life }}
+      </p>
+    {% endif %}
+  </div>
+
+  <hr class="divider">
+
+  <p class="share-label">Share this link with other players:</p>
+  <div class="share-box" onclick="copyLink()" title="Click to copy">
+    <span id="join-url">{{ join_url }}</span>
+  </div>
+  <p class="copied-msg" id="copied">✓ Copied to clipboard!</p>
+
+  <div class="waiting" id="waiting-msg">
+    Waiting for players…
+    <strong id="joined-count">{{ joined }}</strong> /
+    <strong id="total-count">{{ total }}</strong> joined
+  </div>
+{% endblock %}

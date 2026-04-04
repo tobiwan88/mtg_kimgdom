@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Join — Commander Kingdom{% endblock %}
+
+{% block content %}
+  <p class="subtitle">Advanced Kingdoms — EDH Variant</p>
+
+  {% if error %}
+    <p class="error">{{ error }}</p>
+  {% endif %}
+
+  {% if locked %}
+    <p class="error" style="font-size: 1rem;">
+      This game is full. No more players can join.
+    </p>
+  {% else %}
+    <p class="join-count">{{ joined }} / {{ total }} players have joined.</p>
+
+    <form method="POST">
+      <label for="name">Your name</label>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        placeholder="e.g. Aragorn"
+        required
+        maxlength="30"
+        autocomplete="off"
+      >
+      <button type="submit">Join &amp; Reveal My Role</button>
+    </form>
+  {% endif %}
+{% endblock %}

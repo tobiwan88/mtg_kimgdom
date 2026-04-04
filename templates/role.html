@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Your Role — Commander Kingdom{% endblock %}
+
+{% block head %}
+<script>
+  function refreshPlayers() {
+    fetch("{{ url_for('api_status', game_id=game_id) }}")
+      .then((r) => r.json())
+      .then((d) => {
+        const list = document.getElementById("player-list");
+        list.innerHTML = d.players
+          .map(
+            (p) =>
+              '<div class="player-item">' +
+              '<span class="dot' + (p.is_king ? " king" : "") + '"></span>' +
+              p.name +
+              (p.is_king ? " 👑" : "") +
+              "</div>"
+          )
+          .join("");
+
+        document.getElementById("status-msg").textContent = d.locked
+          ? "All " + d.total + " players have joined. Game on!"
+          : d.joined + " / " + d.total + " players joined…";
+      });
+  }
+
+  setInterval(refreshPlayers, 3000);
+</script>
+{% endblock %}
+
+{% block content %}
+  <p class="player-name">Playing as <strong>{{ player_name }}</strong></p>
+
+  <div
+    class="role-card"
+    style="--role-color: {{ role.color }}; --role-border: {{ role.border }}"
+  >
+    <div class="role-header">
+      <span class="role-icon">{{ role.icon }}</span>
+      <div>
+        <span class="role-name">{{ role_name }}</span>
+        {% if role.public %}
+          <span class="badge-public">PUBLIC</span>
+        {% endif %}
+        <div class="role-team">{{ role.team }}</div>
+      </div>
+    </div>
+
+    <p class="role-desc">{{ role.description | safe }}</p>
+    <p class="role-win"><strong>Victory:</strong> {{ role.win }}</p>
+    {% if role.life %}
+      <p class="role-life">
+        <strong>Starting life:</strong> {{ role.life }}
+      </p>
+    {% endif %}
+  </div>
+
+  <div class="players-list">
+    <h3>Players in this game</h3>
+    <div id="player-list">
+      {% for p in players %}
+        <div class="player-item">
+          <span class="dot {% if p.is_king %}king{% endif %}"></span>
+          {{ p.name }}{% if p.is_king %} 👑{% endif %}
+        </div>
+      {% endfor %}
+    </div>
+    <p class="status" id="status-msg">
+      {% if locked %}
+        All {{ total }} players have joined. Game on!
+      {% else %}
+        {{ joined }} / {{ total }} players joined…
+      {% endif %}
+    </p>
+  </div>
+{% endblock %}
