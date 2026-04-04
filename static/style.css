@@ -1,5 +1,5 @@
 /* =========================================================
-   MTG Commander Kingdom — stylesheet
+   MTG Advanced Kingdoms — stylesheet
    Dynamic role colours are injected as CSS custom properties
    via inline style on .role-card elements:
        style="--role-color: #…; --role-border: #…"
@@ -159,13 +159,107 @@ button:hover {
     color: var(--role-color, #e8d5a3);
 }
 
-.role-team {
-    font-size: 0.78rem;
+/* .role-team removed — replaced by .role-type */
+
+.role-type {
+    font-size: 0.75rem;
     color: #a08840;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.07em;
+    margin-top: 0.1rem;
 }
 
+/* ----- Card sections (victory / defeat / announce / passive) ----------- */
+
+.card-section {
+    margin-top: 0.65rem;
+    padding-top: 0.55rem;
+    border-top: 1px solid rgba(90, 64, 16, 0.4);
+}
+
+.card-section:first-of-type {
+    border-top: none;
+    padding-top: 0;
+    margin-top: 0.5rem;
+}
+
+.section-label {
+    font-size: 0.78rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-right: 0.3rem;
+}
+
+.victory-label {
+    color: #81c784;
+}
+
+.defeat-label {
+    color: #e57373;
+}
+
+.announce-label {
+    color: #ffd700;
+}
+
+.section-text {
+    font-size: 0.88rem;
+    line-height: 1.55;
+    color: #c9a84c;
+}
+
+.section-text.muted {
+    color: #8a7050;
+}
+
+/* ----- Announce block -------------------------------------------------- */
+
+.announce-section {
+    background: rgba(255, 215, 0, 0.04);
+    border: 1px solid rgba(255, 215, 0, 0.15);
+    border-radius: 6px;
+    padding: 0.6rem 0.7rem;
+    margin-top: 0.65rem;
+}
+
+.announce-header {
+    margin-bottom: 0.35rem;
+}
+
+.announce-reminder {
+    font-size: 0.75rem;
+    color: #7a6530;
+    font-style: italic;
+}
+
+.announce-text {
+    color: #dcc070;
+}
+
+.announce-timing {
+    font-size: 0.78rem;
+    color: #8a7050;
+    margin-top: 0.3rem;
+    font-style: italic;
+}
+
+/* ----- Passive block --------------------------------------------------- */
+
+.passive-section {
+    background: rgba(144, 202, 249, 0.05);
+    border: 1px solid rgba(144, 202, 249, 0.12);
+    border-radius: 6px;
+    padding: 0.5rem 0.7rem;
+    margin-top: 0.65rem;
+}
+
+.passive-text {
+    color: #90caf9;
+    font-style: italic;
+}
+
+/* Legacy aliases (kept for backward compat, now unused by templates) */
 .role-desc,
 .role-win {
     font-size: 0.9rem;

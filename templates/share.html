@@ -33,29 +33,7 @@
 {% block content %}
   <h2>Your Secret Role</h2>
 
-  <div
-    class="role-card"
-    style="--role-color: {{ role.color }}; --role-border: {{ role.border }}"
-  >
-    <div class="role-header">
-      <span class="role-icon">{{ role.icon }}</span>
-      <div>
-        <span class="role-name">{{ role_name }}</span>
-        {% if role.public %}
-          <span class="badge-public">PUBLIC</span>
-        {% endif %}
-        <div class="role-team">{{ role.team }}</div>
-      </div>
-    </div>
-
-    <p class="role-desc">{{ role.description | safe }}</p>
-    <p class="role-win"><strong>Victory:</strong> {{ role.win }}</p>
-    {% if role.life %}
-      <p class="role-life">
-        <strong>Starting life:</strong> {{ role.life }}
-      </p>
-    {% endif %}
-  </div>
+  {% include "_card.html" %}
 
   <hr class="divider">
 

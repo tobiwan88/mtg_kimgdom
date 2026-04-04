@@ -1,0 +1,79 @@
+{#
+  Reusable character card partial — include this wherever a card is needed.
+
+  Required context variables
+  --------------------------
+  character_name  – str  e.g. "The Queen"
+  character       – dict from game.CHARACTERS
+  role_type       – str  e.g. "Knight"
+  style           – dict from game.ROLE_STYLES
+#}
+
+<div
+  class="role-card"
+  style="--role-color: {{ style.color }}; --role-border: {{ style.border }}"
+>
+  {# ── Header ───────────────────────────────────────────────────────────── #}
+  <div class="role-header">
+    <span class="role-icon">{{ style.icon }}</span>
+    <div>
+      <span class="role-name">{{ character_name }}</span>
+      {% if style.public %}
+        <span class="badge-public">PUBLIC</span>
+      {% endif %}
+      <div class="role-type">Kingdom Role — {{ role_type }}</div>
+    </div>
+  </div>
+
+  {# ── Victory ──────────────────────────────────────────────────────────── #}
+  <div class="card-section">
+    <p class="section-text">
+      <span class="section-label victory-label">Victory —</span>
+      {{ character.victory }}
+    </p>
+  </div>
+
+  {# ── Defeat (only when card has an explicit defeat condition) ─────────── #}
+  {% if character.defeat %}
+    <div class="card-section">
+      <p class="section-text muted">
+        <span class="section-label defeat-label">Defeat —</span>
+        {{ character.defeat }}
+      </p>
+    </div>
+  {% endif %}
+
+  {# ── Announce ability ─────────────────────────────────────────────────── #}
+  {% if character.announce %}
+    {% set announce_parts = character.announce.split(" | ") %}
+    <div class="card-section announce-section">
+      <p class="announce-header">
+        <span class="section-label announce-label">Announce</span>
+        <span class="announce-reminder">
+          (Turn this card face up to reveal your role.)
+        </span>
+      </p>
+      <p class="section-text announce-text">{{ announce_parts[0] }}</p>
+      {% if announce_parts | length > 1 %}
+        <p class="announce-timing">⏱ {{ announce_parts[1] }}</p>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {# ── Passive ability ──────────────────────────────────────────────────── #}
+  {% if character.passive %}
+    <div class="card-section passive-section">
+      <p class="section-text passive-text">{{ character.passive }}</p>
+    </div>
+  {% endif %}
+
+  {# ── Starting life override (King only) ──────────────────────────────── #}
+  {% if character.life %}
+    <div class="card-section">
+      <p class="section-text">
+        <span class="section-label">Starting life:</span>
+        {{ character.life }}
+      </p>
+    </div>
+  {% endif %}
+</div>
