@@ -31,3 +31,4 @@ uv run mtg-kingdom
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `PORT` | `5001` | Port the app listens on |
+| `MAX_SESSIONS` | `20` | Max concurrent games; oldest is dropped when limit is reached |

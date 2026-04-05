@@ -12,6 +12,8 @@ GET  /play/<game_id>/<token>    Player character view.
 GET  /api/status/<game_id>      JSON status (player list, lock state).
 """
 
+import os
+import time
 import uuid
 
 from flask import (
@@ -34,17 +36,33 @@ from mtg_kimgdom.game import (
 
 app = Flask(__name__)
 
+MAX_SESSIONS = int(os.environ.get("MAX_SESSIONS", 20))
+SESSION_TTL = 24 * 60 * 60  # 24 h in seconds
+
 # ---------------------------------------------------------------------------
 # In-memory game store
 #
 # games[game_id] = {
 #     "total":      int,
 #     "locked":     bool,
+#     "created_at": float,        # time.time() at creation
 #     "players":    [{"name": str, "character": str, "token": str}, ...],
 #     "card_pool":  [str, ...],   # remaining character names to be assigned
 # }
 # ---------------------------------------------------------------------------
 games: dict[str, dict] = {}
+
+
+def _purge_sessions() -> None:
+    """Remove sessions older than SESSION_TTL and enforce MAX_SESSIONS cap."""
+    cutoff = time.time() - SESSION_TTL
+    expired = [gid for gid, g in games.items() if g["created_at"] < cutoff]
+    for gid in expired:
+        del games[gid]
+
+    while len(games) >= MAX_SESSIONS:
+        oldest = min(games, key=lambda gid: games[gid]["created_at"])
+        del games[oldest]
 
 
 # ---------------------------------------------------------------------------
@@ -145,6 +163,8 @@ def create():
             max_players=MAX_PLAYERS,
         )
 
+    _purge_sessions()
+
     game_id = uuid.uuid4().hex[:10]
     cards = make_distribution(total)
     host_token = uuid.uuid4().hex
@@ -152,6 +172,7 @@ def create():
     games[game_id] = {
         "total": total,
         "locked": False,
+        "created_at": time.time(),
         "players": [{"name": name, "character": cards[0], "token": host_token}],
         "card_pool": cards[1:],
     }
