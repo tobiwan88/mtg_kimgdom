@@ -402,3 +402,130 @@ button:hover {
     margin-bottom: 1.2rem;
     text-align: center;
 }
+
+/* ----- Bandit crew section ----------------------------- */
+
+.bandit-team {
+    border: 1px solid #b71c1c;
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    margin-bottom: 1.2rem;
+    background: rgba(183, 28, 28, 0.07);
+}
+
+.bandit-team h3 {
+    font-size: 0.85rem;
+    color: #ef9a9a;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.6rem;
+    text-align: left;
+}
+
+.bandit-team .player-item em {
+    color: #8a7050;
+    font-style: italic;
+}
+
+.bandit-solo {
+    font-size: 0.85rem;
+    color: #8a7050;
+    font-style: italic;
+}
+
+/* ----- Rules section ----------------------------------- */
+
+.rules summary {
+    cursor: pointer;
+    color: #a08840;
+    font-size: 0.9rem;
+    user-select: none;
+    list-style: none;
+    text-align: center;
+}
+
+.rules summary::-webkit-details-marker {
+    display: none;
+}
+
+.rules[open] summary {
+    color: #ffd700;
+    margin-bottom: 0.9rem;
+}
+
+.rules-list {
+    padding-left: 1.2rem;
+    color: #c9a84c;
+    font-size: 0.83rem;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+}
+
+.rules-list ul {
+    margin-top: 0.35rem;
+    padding-left: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.rules-list strong {
+    color: #e8d5a3;
+}
+
+.rules-list em {
+    color: #8a7050;
+}
+
+/* ----- Tips & Clarifications (card-level) ------------------------------ */
+
+.card-tips {
+    margin-top: 0.75rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 0.6rem;
+}
+
+.card-tips summary {
+    cursor: pointer;
+    font-size: 0.8rem;
+    color: #9ab8d8;
+    user-select: none;
+    list-style: none;
+    text-align: center;
+}
+
+.card-tips summary::-webkit-details-marker {
+    display: none;
+}
+
+.card-tips[open] summary {
+    color: #b8d8f8;
+    margin-bottom: 0.6rem;
+}
+
+.tips-list {
+    padding-left: 1.1rem;
+    font-size: 0.78rem;
+    line-height: 1.55;
+    color: #a0bcd8;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin: 0;
+}
+
+.tips-clarifications-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #6a8aaa;
+    margin: 0.6rem 0 0.3rem;
+    text-align: center;
+}
+
+.clarifications-list {
+    color: #8aaac8;
+    font-style: italic;
+}

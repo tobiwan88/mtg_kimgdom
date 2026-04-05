@@ -1,12 +1,11 @@
-FROM python:3.12-slim
+FROM ghcr.io/astral-sh/uv:0.11.3-python3.14-trixie-slim
 
 WORKDIR /app
+COPY pyproject.toml uv.lock ./
+COPY src/ ./src/
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN uv sync --no-dev --no-editable
 
-COPY app.py .
+EXPOSE 5001
 
-EXPOSE 5000
-
-CMD ["python", "app.py"]
+CMD ["uv", "run", "mtg-kingdom"]
