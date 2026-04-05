@@ -3,7 +3,7 @@
 {% block title %}Commander Kingdom{% endblock %}
 
 {% block content %}
-  <p class="subtitle">Advanced Kingdoms — EDH Variant</p>
+  <p class="subtitle">Commander Kingdom — EDH Variant</p>
 
   {% if error %}
     <p class="error">{{ error }}</p>
@@ -21,9 +21,22 @@
       autocomplete="off"
     >
 
-    <label for="total">
-      Number of players ({{ min_players }}–{{ max_players }})
-    </label>
+    <label for="variant">Variant</label>
+    <select id="variant" name="variant">
+      {% for vid, v in variants.items() %}
+        <option value="{{ vid }}"{% if vid == default_variant %} selected{% endif %}>
+          {{ v.name }}
+        </option>
+      {% endfor %}
+    </select>
+    {% for vid, v in variants.items() %}
+      <p class="variant-description" id="desc-{{ vid }}"
+         style="{% if vid != default_variant %}display:none;{% endif %}font-size:0.85em;color:#888;margin:0 0 0.75em;">
+        {{ v.description }}
+      </p>
+    {% endfor %}
+
+    <label for="total">Number of players ({{ min_players }}–{{ max_players }})</label>
     <input
       type="number"
       id="total"
@@ -36,4 +49,34 @@
 
     <button type="submit">Create Game &amp; Get My Role</button>
   </form>
+
+  <script>
+    (function () {
+      var variantData = {{ variants | tojson }};
+      var sel = document.getElementById('variant');
+      var totalInput = document.getElementById('total');
+
+      function updateVariant() {
+        var vid = sel.value;
+        // show/hide descriptions
+        document.querySelectorAll('.variant-description').forEach(function (el) {
+          el.style.display = el.id === 'desc-' + vid ? '' : 'none';
+        });
+        // update player-count range
+        var dists = variantData[vid] && variantData[vid].distributions;
+        if (dists) {
+          var counts = Object.keys(dists).map(Number);
+          var minP = Math.min.apply(null, counts);
+          var maxP = Math.max.apply(null, counts);
+          totalInput.min = minP;
+          totalInput.max = maxP;
+          totalInput.labels[0].textContent = 'Number of players (' + minP + '\u2013' + maxP + ')';
+          if (+totalInput.value < minP) totalInput.value = minP;
+          if (+totalInput.value > maxP) totalInput.value = maxP;
+        }
+      }
+
+      sel.addEventListener('change', updateVariant);
+    })();
+  </script>
 {% endblock %}

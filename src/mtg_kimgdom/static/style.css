@@ -403,6 +403,68 @@ button:hover {
     text-align: center;
 }
 
+/* ----- King reveal section ----------------------------- */
+
+.king-reveal-section {
+    border: 1px solid #b8860b;
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    margin-bottom: 1.2rem;
+    background: rgba(255, 215, 0, 0.08);
+    text-align: center;
+}
+
+.king-reveal-section p {
+    font-size: 0.85rem;
+    color: #a08840;
+    margin-bottom: 0.6rem;
+}
+
+.btn-reveal {
+    background: #b8860b;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1.2rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+}
+
+.btn-reveal:hover {
+    background: #a07808;
+}
+
+.reveal-confirmed {
+    text-align: center;
+    color: #a08840;
+    font-size: 0.85rem;
+    margin-bottom: 1.2rem;
+}
+
+.king-revealed-banner {
+    border: 1px solid #b8860b;
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    margin-bottom: 1.2rem;
+    background: rgba(255, 215, 0, 0.08);
+    text-align: center;
+    font-size: 0.9rem;
+    color: #a08840;
+}
+
+.king-revealed-banner a {
+    color: #FFD700;
+    font-weight: 600;
+    text-decoration: none;
+    margin-left: 0.4rem;
+}
+
+.king-revealed-banner a:hover {
+    text-decoration: underline;
+}
+
 /* ----- Bandit crew section ----------------------------- */
 
 .bandit-team {
