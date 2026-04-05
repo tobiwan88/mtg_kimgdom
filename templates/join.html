@@ -30,4 +30,30 @@
       <button type="submit">Join &amp; Reveal My Role</button>
     </form>
   {% endif %}
+
+  <hr class="divider">
+
+  <details class="rules">
+    <summary>📜 Game Rules</summary>
+    <ol class="rules-list">
+      <li>Role cards start the game <strong>face down</strong> unless otherwise noted on the role card. Players may not show face down role cards at any time. When a player is eliminated and their role card is not face up, reveal it.</li>
+      <li>Face up Knights, Assassins, Bandits, and Renegades are <strong>teammates</strong> with others of the same role type. Face up Knights and Kings are also teammates.</li>
+      <li>Players can only win/lose by the <strong>Victory/Defeat conditions</strong> on role cards:
+        <ul>
+          <li>Non-role abilities may not win the game or stop a player from winning. ("Win the game" / "can't win the game" abilities have no effect.)</li>
+          <li>The first player to meet their Victory condition wins. Simultaneous victories are shared wins.</li>
+          <li>"[Role type] are eliminated" means all players of that role are no longer in the game — you don't have to be the one to eliminate them.</li>
+          <li>If your Defeat condition is met at any time, you are immediately eliminated.</li>
+          <li>Roles with no Defeat condition use the default: <em>"You are eliminated."</em></li>
+          <li>It is possible to be eliminated and still win (e.g. a Knight wins when the King's Victory condition is met).</li>
+        </ul>
+      </li>
+      <li><strong>Announce</strong> activates your character's special ability. Turn your face down role card face up to Announce. Face up cards cannot Announce again.</li>
+      <li>All role card abilities use the stack and can be responded to, but <strong>cannot be targeted, countered, or exiled</strong> by spells and abilities.</li>
+      <li>If you take control of another player's turn, you may not look at their face down role card. That player retains control of their role card and cannot Announce during that turn.</li>
+      <li>If a player draws from an empty library and loses the game, the player who <em>forced</em> that draw — or secondly, who removed the last card from that library — 'eliminated' them.</li>
+      <li>If a player would lose due to drawing into an empty library but is kept alive by a role card ability (e.g. the Cultist), that player may shuffle one of the following into their library: their graveyard, exile zone, or hand.</li>
+      <li>You 'eliminate' another player if an effect you control caused them to lose the game (life loss, drawing from an empty library, commander damage, or poison counters).</li>
+    </ol>
+  </details>
 {% endblock %}

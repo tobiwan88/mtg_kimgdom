@@ -402,3 +402,49 @@ button:hover {
     margin-bottom: 1.2rem;
     text-align: center;
 }
+
+/* ----- Rules section ----------------------------------- */
+
+.rules summary {
+    cursor: pointer;
+    color: #a08840;
+    font-size: 0.9rem;
+    user-select: none;
+    list-style: none;
+    text-align: center;
+}
+
+.rules summary::-webkit-details-marker {
+    display: none;
+}
+
+.rules[open] summary {
+    color: #ffd700;
+    margin-bottom: 0.9rem;
+}
+
+.rules-list {
+    padding-left: 1.2rem;
+    color: #c9a84c;
+    font-size: 0.83rem;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+}
+
+.rules-list ul {
+    margin-top: 0.35rem;
+    padding-left: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.rules-list strong {
+    color: #e8d5a3;
+}
+
+.rules-list em {
+    color: #8a7050;
+}
