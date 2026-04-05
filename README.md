@@ -118,6 +118,40 @@ python app.py
 
 ---
 
+## Development
+
+### Prerequisites
+
+- [uv](https://docs.astral.sh/uv/) — package manager
+
+### Setup
+
+```bash
+git clone https://github.com/tobiwan88/mtg_kimgdom.git
+cd mtg_kimgdom
+
+# Install dependencies (including dev tools)
+uv sync --group dev
+
+# Install pre-commit hooks
+uv run pre-commit install
+```
+
+### Tooling
+
+| Tool | Purpose | Command |
+|------|---------|---------|
+| [ruff](https://docs.astral.sh/ruff/) | Lint & format | `uv run ruff check . && uv run ruff format .` |
+| [ty](https://docs.astral.sh/ty/) | Type checking | `uv run ty check` |
+| [pre-commit](https://pre-commit.com/) | Git hooks (ruff, ty, secret scan) | runs automatically on `git commit` |
+
+Pre-commit hooks run automatically on every commit and check for:
+- Code style & lint issues (ruff)
+- Type errors (ty)
+- Leaked secrets (gitleaks)
+
+---
+
 ## Configuration
 
 | Environment variable | Default | Description |
