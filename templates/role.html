@@ -35,6 +35,22 @@
 
   {% include "_card.html" %}
 
+  {% if bandit_teammates is not none %}
+    <div class="bandit-team">
+      <h3>💀 Your Bandit Crew</h3>
+      {% if bandit_teammates %}
+        {% for b in bandit_teammates %}
+          <div class="player-item">
+            <span class="dot" style="background:#b71c1c"></span>
+            {{ b.name }} — <em>{{ b.character }}</em>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="bandit-solo">You are the only Bandit.</p>
+      {% endif %}
+    </div>
+  {% endif %}
+
   <div class="players-list">
     <h3>Players in this game</h3>
     <div id="player-list">

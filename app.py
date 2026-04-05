@@ -25,7 +25,7 @@ from flask import (
     url_for,
 )
 
-from game import CHARACTERS, MIN_PLAYERS, MAX_PLAYERS, ROLE_STYLES, make_distribution
+from game import CHARACTERS, MAX_PLAYERS, MIN_PLAYERS, ROLE_STYLES, make_distribution
 
 app = Flask(__name__)
 
@@ -46,6 +46,7 @@ games: dict[str, dict] = {}
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def _get_game_or_404(game_id: str) -> dict:
     """Return the game dict for *game_id*, or abort with 404."""
     game = games.get(game_id)
@@ -56,9 +57,7 @@ def _get_game_or_404(game_id: str) -> dict:
 
 def _get_player_or_403(game: dict, token: str) -> dict:
     """Return the player dict matching *token*, or abort with 403."""
-    player = next(
-        (p for p in game["players"] if p["token"] == token), None
-    )
+    player = next((p for p in game["players"] if p["token"] == token), None)
     if player is None:
         abort(403)
     return player
@@ -72,6 +71,18 @@ def _player_list_info(game: dict) -> list[dict]:
             "is_king": CHARACTERS[p["character"]]["role"] == "King",
         }
         for p in game["players"]
+    ]
+
+
+def _bandit_teammates(game: dict, token: str) -> list[dict] | None:
+    """Return fellow Bandits (name + character) for a Bandit player, or None."""
+    player = next(p for p in game["players"] if p["token"] == token)
+    if CHARACTERS[player["character"]]["role"] != "Bandit":
+        return None
+    return [
+        {"name": p["name"], "character": p["character"]}
+        for p in game["players"]
+        if CHARACTERS[p["character"]]["role"] == "Bandit" and p["token"] != token
     ]
 
 
@@ -90,6 +101,7 @@ def _card_context(character_name: str) -> dict:
 # ---------------------------------------------------------------------------
 # Routes
 # ---------------------------------------------------------------------------
+
 
 @app.route("/")
 def index():
@@ -123,10 +135,7 @@ def create():
     except ValueError:
         return render_template(
             "index.html",
-            error=(
-                f"Player count must be between {MIN_PLAYERS}"
-                f" and {MAX_PLAYERS}."
-            ),
+            error=(f"Player count must be between {MIN_PLAYERS} and {MAX_PLAYERS}."),
             min_players=MIN_PLAYERS,
             max_players=MAX_PLAYERS,
         )
@@ -138,9 +147,7 @@ def create():
     games[game_id] = {
         "total": total,
         "locked": False,
-        "players": [
-            {"name": name, "character": cards[0], "token": host_token}
-        ],
+        "players": [{"name": name, "character": cards[0], "token": host_token}],
         "card_pool": cards[1:],
     }
 
@@ -153,9 +160,7 @@ def share(game_id: str, token: str):
     game = _get_game_or_404(game_id)
     player = _get_player_or_403(game, token)
 
-    join_url = (
-        request.host_url.rstrip("/") + url_for("join", game_id=game_id)
-    )
+    join_url = request.host_url.rstrip("/") + url_for("join", game_id=game_id)
 
     return render_template(
         "share.html",
@@ -218,9 +223,7 @@ def join(game_id: str):
 
     character_name = pool.pop(0)
     token = uuid.uuid4().hex
-    game["players"].append(
-        {"name": name, "character": character_name, "token": token}
-    )
+    game["players"].append({"name": name, "character": character_name, "token": token})
 
     if len(game["players"]) >= game["total"]:
         game["locked"] = True
@@ -240,6 +243,7 @@ def player_view(game_id: str, token: str):
         player_name=player["name"],
         **_card_context(player["character"]),
         players=_player_list_info(game),
+        bandit_teammates=_bandit_teammates(game, token),
         joined=len(game["players"]),
         total=game["total"],
         locked=game["locked"],
@@ -264,5 +268,5 @@ def api_status(game_id: str):
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get("PORT", 5001))
     app.run(host="0.0.0.0", port=port, debug=False)
