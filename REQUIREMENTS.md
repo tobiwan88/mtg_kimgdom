@@ -8,7 +8,7 @@ Cross-reference of the Advanced Kingdoms v1.56 ruleset (PDF) against the current
 
 | # | Requirement | Status |
 |---|-------------|--------|
-| S1 | Support 5–9 players (official PDF distributions) | ✅ |
+| S1 | Support 3–12 players (incremental distributions per README) | ✅ |
 | S2 | Randomly select characters per role type per player count | ✅ |
 | S3 | Deal one secret role card per player | ✅ |
 | S4 | King role is always public — revealed to all players at start | ✅ |
@@ -16,17 +16,20 @@ Cross-reference of the Advanced Kingdoms v1.56 ruleset (PDF) against the current
 | S6 | Assassins do **not** identify each other at start | ✅ Not shown |
 | S7 | King starts with +10 life (50 total) | ✅ |
 
-**Player count distributions (PDF Game Setup card):**
+**Player count distributions (3–12 players, incremental):**
 
 | Players | King | Knight | Assassin | Bandit | Renegade |
 |---------|------|--------|----------|--------|----------|
-| 5p | 1 | 1 | 2 | 0 | 1 |
-| 6p | 1 | 1 | 2 | 2 | 0 |
-| 7p | 1 | 1 | 2 | 2 | 1 |
-| 8p | 1 | 1 | 3 | 2 | 1 |
-| 9p | 1 | 2 | 3 | 3 | 0 |
-
-> Note: README role table references 3–12 players with a different incremental distribution — this appears to be a separate variant not covered by the PDF setup card. Currently not implemented.
+| 3p | 1 | 0 | 1 | 1 | 0 |
+| 4p | 1 | 1 | 1 | 1 | 0 |
+| 5p | 1 | 1 | 1 | 1 | 1 |
+| 6p | 1 | 2 | 1 | 1 | 1 |
+| 7p | 1 | 2 | 2 | 1 | 1 |
+| 8p | 1 | 2 | 2 | 2 | 1 |
+| 9p | 1 | 3 | 2 | 2 | 1 |
+| 10p | 1 | 3 | 2 | 2 | 2 |
+| 11p | 1 | 3 | 3 | 2 | 2 |
+| 12p | 1 | 3 | 3 | 3 | 2 |
 
 ---
 

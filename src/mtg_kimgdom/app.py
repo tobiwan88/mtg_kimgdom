@@ -12,7 +12,6 @@ GET  /play/<game_id>/<token>    Player character view.
 GET  /api/status/<game_id>      JSON status (player list, lock state).
 """
 
-import os
 import uuid
 
 from flask import (
@@ -25,7 +24,13 @@ from flask import (
     url_for,
 )
 
-from game import CHARACTERS, MAX_PLAYERS, MIN_PLAYERS, ROLE_STYLES, make_distribution
+from mtg_kimgdom.game import (
+    CHARACTERS,
+    MAX_PLAYERS,
+    MIN_PLAYERS,
+    ROLE_STYLES,
+    make_distribution,
+)
 
 app = Flask(__name__)
 
@@ -261,12 +266,3 @@ def api_status(game_id: str):
         locked=game["locked"],
         players=_player_list_info(game),
     )
-
-
-# ---------------------------------------------------------------------------
-# Entry point
-# ---------------------------------------------------------------------------
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5001))
-    app.run(host="0.0.0.0", port=port, debug=False)

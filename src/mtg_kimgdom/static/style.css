@@ -478,3 +478,54 @@ button:hover {
 .rules-list em {
     color: #8a7050;
 }
+
+/* ----- Tips & Clarifications (card-level) ------------------------------ */
+
+.card-tips {
+    margin-top: 0.75rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 0.6rem;
+}
+
+.card-tips summary {
+    cursor: pointer;
+    font-size: 0.8rem;
+    color: #9ab8d8;
+    user-select: none;
+    list-style: none;
+    text-align: center;
+}
+
+.card-tips summary::-webkit-details-marker {
+    display: none;
+}
+
+.card-tips[open] summary {
+    color: #b8d8f8;
+    margin-bottom: 0.6rem;
+}
+
+.tips-list {
+    padding-left: 1.1rem;
+    font-size: 0.78rem;
+    line-height: 1.55;
+    color: #a0bcd8;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin: 0;
+}
+
+.tips-clarifications-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #6a8aaa;
+    margin: 0.6rem 0 0.3rem;
+    text-align: center;
+}
+
+.clarifications-list {
+    color: #8aaac8;
+    font-style: italic;
+}

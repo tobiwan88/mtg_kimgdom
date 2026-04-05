@@ -76,4 +76,26 @@
       </p>
     </div>
   {% endif %}
+
+  {# ── Tips & Clarifications ────────────────────────────────────────────── #}
+  {% if character.tips or character.clarifications %}
+    <details class="card-tips">
+      <summary>💡 Tips &amp; Clarifications</summary>
+      {% if character.tips %}
+        <ul class="tips-list">
+          {% for tip in character.tips %}
+            <li>{{ tip }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+      {% if character.clarifications %}
+        <p class="tips-clarifications-label">Clarifications</p>
+        <ul class="tips-list clarifications-list">
+          {% for c in character.clarifications %}
+            <li>{{ c }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </details>
+  {% endif %}
 </div>
