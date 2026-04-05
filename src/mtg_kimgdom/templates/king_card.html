@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}King's Card — Commander Kingdom{% endblock %}
+
+{% block content %}
+  <p class="player-name"><strong>{{ king_name }}</strong> is the King</p>
+  <p class="variant-label">{{ variant_name }}</p>
+
+  {% include "_card.html" %}
+
+  <p style="margin-top:1.5rem; text-align:center">
+    <a href="javascript:history.back()" class="btn-secondary">← Back</a>
+  </p>
+{% endblock %}

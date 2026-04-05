@@ -4,26 +4,47 @@
 
 {% block head %}
 <script>
+  const KING_CARD_URL = "{{ url_for('king_card', game_id=game_id) }}";
+
   function refreshPlayers() {
     fetch("{{ url_for('api_status', game_id=game_id) }}")
       .then((r) => r.json())
       .then((d) => {
         const list = document.getElementById("player-list");
         list.innerHTML = d.players
-          .map(
-            (p) =>
-              '<div class="player-item">' +
+          .map((p) => {
+            let label = p.name;
+            if (p.is_king) label += " 👑";
+            if (p.is_king && p.character) label += ' — <em>' + p.character + '</em>';
+            return '<div class="player-item">' +
               '<span class="dot' + (p.is_king ? " king" : "") + '"></span>' +
-              p.name +
-              (p.is_king ? " 👑" : "") +
-              "</div>"
-          )
+              label + "</div>";
+          })
           .join("");
 
         document.getElementById("status-msg").textContent = d.locked
           ? "All " + d.total + " players have joined. Game on!"
           : d.joined + " / " + d.total + " players joined…";
+
+        // Show/hide the "View King's Card" banner for non-King players
+        const banner = document.getElementById("king-revealed-banner");
+        if (banner) {
+          banner.style.display = d.king_revealed ? "block" : "none";
+        }
+
+        // Hide the reveal button once the king has revealed
+        const revealBtn = document.getElementById("reveal-btn");
+        if (revealBtn && d.king_revealed) {
+          revealBtn.style.display = "none";
+          document.getElementById("reveal-confirmed").style.display = "block";
+        }
       });
+  }
+
+  function revealCard() {
+    fetch("{{ url_for('api_reveal', game_id=game_id, token=token) }}", { method: "POST" })
+      .then((r) => r.json())
+      .then(() => refreshPlayers());
   }
 
   setInterval(refreshPlayers, 3000);
@@ -34,6 +55,25 @@
   <p class="player-name">Playing as <strong>{{ player_name }}</strong></p>
 
   {% include "_card.html" %}
+
+  {# ── King: reveal button ────────────────────────────────────────────────── #}
+  {% if role_type == "King" %}
+    <div class="king-reveal-section" id="reveal-btn"{% if king_revealed %} style="display:none"{% endif %}>
+      <p>Your card is public — press the button to show your card to all players.</p>
+      <button class="btn-reveal" onclick="revealCard()">👑 Reveal my card to all players</button>
+    </div>
+    <p class="reveal-confirmed" id="reveal-confirmed"{% if not king_revealed %} style="display:none"{% endif %}>
+      ✅ Your card has been revealed to all players.
+    </p>
+  {% endif %}
+
+  {# ── Non-King: banner shown once King reveals ───────────────────────────── #}
+  {% if role_type != "King" %}
+    <div class="king-revealed-banner" id="king-revealed-banner"{% if not king_revealed %} style="display:none"{% endif %}>
+      👑 The King has revealed their card!
+      <a href="{{ url_for('king_card', game_id=game_id) }}">View King's Card →</a>
+    </div>
+  {% endif %}
 
   {% if bandit_teammates is not none %}
     <div class="bandit-team">

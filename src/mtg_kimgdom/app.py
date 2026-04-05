@@ -88,15 +88,17 @@ def _get_player_or_403(game: dict, token: str) -> dict:
 
 
 def _player_list_info(game: dict) -> list[dict]:
-    """Return a public-safe list of player dicts (name + is_king only)."""
+    """Return a public-safe list of player dicts (name, is_king, and character when revealed)."""
     characters = VARIANTS[game["variant"]]["characters"]
-    return [
-        {
-            "name": p["name"],
-            "is_king": characters[p["character"]]["role"] == "King",
-        }
-        for p in game["players"]
-    ]
+    king_revealed = game.get("king_revealed", False)
+    result = []
+    for p in game["players"]:
+        is_king = characters[p["character"]]["role"] == "King"
+        entry: dict = {"name": p["name"], "is_king": is_king}
+        if is_king and king_revealed:
+            entry["character"] = p["character"]
+        result.append(entry)
+    return result
 
 
 def _bandit_teammates(game: dict, token: str) -> list[dict] | None:
@@ -190,6 +192,7 @@ def create():
         "total": total,
         "variant": variant_id,
         "locked": False,
+        "king_revealed": False,
         "created_at": time.time(),
         "players": [{"name": name, "character": cards[0], "token": host_token}],
         "card_pool": cards[1:],
@@ -285,6 +288,7 @@ def player_view(game_id: str, token: str):
     return render_template(
         "role.html",
         game_id=game_id,
+        token=token,
         player_name=player["name"],
         **_card_context(player["character"], game["variant"]),
         players=_player_list_info(game),
@@ -292,6 +296,7 @@ def player_view(game_id: str, token: str):
         joined=len(game["players"]),
         total=game["total"],
         locked=game["locked"],
+        king_revealed=game.get("king_revealed", False),
         variant_name=VARIANTS[game["variant"]]["name"],
     )
 
@@ -305,5 +310,43 @@ def api_status(game_id: str):
         joined=len(game["players"]),
         total=game["total"],
         locked=game["locked"],
+        king_revealed=game.get("king_revealed", False),
         players=_player_list_info(game),
+    )
+
+
+@app.route("/api/reveal/<game_id>/<token>", methods=["POST"])
+def api_reveal(game_id: str, token: str):
+    """Allow the King player to reveal their card to all players."""
+    game = _get_game_or_404(game_id)
+    player = _get_player_or_403(game, token)
+
+    characters = VARIANTS[game["variant"]]["characters"]
+    if characters[player["character"]]["role"] != "King":
+        abort(403)
+
+    game["king_revealed"] = True
+    return jsonify(ok=True)
+
+
+@app.route("/game/<game_id>/king-card")
+def king_card(game_id: str):
+    """Show the King's revealed character card (only accessible after the King has revealed)."""
+    game = _get_game_or_404(game_id)
+    if not game.get("king_revealed", False):
+        abort(403)
+
+    characters = VARIANTS[game["variant"]]["characters"]
+    king_player = next(
+        (p for p in game["players"] if characters[p["character"]]["role"] == "King"),
+        None,
+    )
+    if king_player is None:
+        abort(404)
+
+    return render_template(
+        "king_card.html",
+        king_name=king_player["name"],
+        variant_name=VARIANTS[game["variant"]]["name"],
+        **_card_context(king_player["character"], game["variant"]),
     )
