@@ -27,10 +27,11 @@ from flask import (
 )
 
 from mtg_kimgdom.game import (
-    CHARACTERS,
+    DEFAULT_VARIANT,
     MAX_PLAYERS,
     MIN_PLAYERS,
     ROLE_STYLES,
+    VARIANTS,
     make_distribution,
 )
 
@@ -88,10 +89,11 @@ def _get_player_or_403(game: dict, token: str) -> dict:
 
 def _player_list_info(game: dict) -> list[dict]:
     """Return a public-safe list of player dicts (name + is_king only)."""
+    characters = VARIANTS[game["variant"]]["characters"]
     return [
         {
             "name": p["name"],
-            "is_king": CHARACTERS[p["character"]]["role"] == "King",
+            "is_king": characters[p["character"]]["role"] == "King",
         }
         for p in game["players"]
     ]
@@ -99,19 +101,21 @@ def _player_list_info(game: dict) -> list[dict]:
 
 def _bandit_teammates(game: dict, token: str) -> list[dict] | None:
     """Return fellow Bandits (name + character) for a Bandit player, or None."""
+    characters = VARIANTS[game["variant"]]["characters"]
     player = next(p for p in game["players"] if p["token"] == token)
-    if CHARACTERS[player["character"]]["role"] != "Bandit":
+    if characters[player["character"]]["role"] != "Bandit":
         return None
     return [
         {"name": p["name"], "character": p["character"]}
         for p in game["players"]
-        if CHARACTERS[p["character"]]["role"] == "Bandit" and p["token"] != token
+        if characters[p["character"]]["role"] == "Bandit" and p["token"] != token
     ]
 
 
-def _card_context(character_name: str) -> dict:
+def _card_context(character_name: str, variant_id: str = DEFAULT_VARIANT) -> dict:
     """Return the merged template context dict for one character card."""
-    char = CHARACTERS[character_name]
+    characters = VARIANTS[variant_id]["characters"]
+    char = characters[character_name]
     style = ROLE_STYLES[char["role"]]
     return {
         "character_name": character_name,
@@ -134,6 +138,21 @@ def index():
         error=None,
         min_players=MIN_PLAYERS,
         max_players=MAX_PLAYERS,
+        variants=VARIANTS,
+        default_variant=DEFAULT_VARIANT,
+    )
+
+
+def _index_error(error: str, variant_id: str = DEFAULT_VARIANT) -> str:
+    """Render index.html with an error, preserving min/max for the chosen variant."""
+    distributions = VARIANTS.get(variant_id, VARIANTS[DEFAULT_VARIANT])["distributions"]
+    return render_template(
+        "index.html",
+        error=error,
+        min_players=min(distributions),
+        max_players=max(distributions),
+        variants=VARIANTS,
+        default_variant=variant_id,
     )
 
 
@@ -142,35 +161,34 @@ def create():
     """Validate form data, create a new game, redirect host to share view."""
     name = request.form.get("name", "").strip()
     total_raw = request.form.get("total", "").strip()
+    variant_id = request.form.get("variant", DEFAULT_VARIANT).strip()
+
+    if variant_id not in VARIANTS:
+        variant_id = DEFAULT_VARIANT
 
     if not name:
-        return render_template(
-            "index.html",
-            error="Please enter your name.",
-            min_players=MIN_PLAYERS,
-            max_players=MAX_PLAYERS,
-        )
+        return _index_error("Please enter your name.", variant_id)
+
+    variant = VARIANTS[variant_id]
+    distributions = variant["distributions"]
+    min_p, max_p = min(distributions), max(distributions)
 
     try:
         total = int(total_raw)
-        if not (MIN_PLAYERS <= total <= MAX_PLAYERS):
+        if total not in distributions:
             raise ValueError
     except ValueError:
-        return render_template(
-            "index.html",
-            error=(f"Player count must be between {MIN_PLAYERS} and {MAX_PLAYERS}."),
-            min_players=MIN_PLAYERS,
-            max_players=MAX_PLAYERS,
-        )
+        return _index_error(f"Player count must be between {min_p} and {max_p}.", variant_id)
 
     _purge_sessions()
 
     game_id = uuid.uuid4().hex[:10]
-    cards = make_distribution(total)
+    cards = make_distribution(total, variant_id)
     host_token = uuid.uuid4().hex
 
     games[game_id] = {
         "total": total,
+        "variant": variant_id,
         "locked": False,
         "created_at": time.time(),
         "players": [{"name": name, "character": cards[0], "token": host_token}],
@@ -191,10 +209,11 @@ def share(game_id: str, token: str):
     return render_template(
         "share.html",
         game_id=game_id,
-        **_card_context(player["character"]),
+        **_card_context(player["character"], game["variant"]),
         join_url=join_url,
         joined=len(game["players"]),
         total=game["total"],
+        variant_name=VARIANTS[game["variant"]]["name"],
     )
 
 
@@ -267,12 +286,13 @@ def player_view(game_id: str, token: str):
         "role.html",
         game_id=game_id,
         player_name=player["name"],
-        **_card_context(player["character"]),
+        **_card_context(player["character"], game["variant"]),
         players=_player_list_info(game),
         bandit_teammates=_bandit_teammates(game, token),
         joined=len(game["players"]),
         total=game["total"],
         locked=game["locked"],
+        variant_name=VARIANTS[game["variant"]]["name"],
     )
 
 

@@ -38,4 +38,8 @@ line-length = 100
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP"]
 
+[tool.ruff.lint.per-file-ignores]
+# variant modules contain long string literals (card text, tips, clarifications)
+"src/mtg_kimgdom/variants/*.py" = ["E501"]
+
 [tool.ty]

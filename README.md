@@ -1,6 +1,7 @@
 # MTG Commander Kingdom
 
 Self-hosted web app for playing **Advanced Kingdoms**, the hidden-role EDH variant. Players join via a shared link and each see only their own secret role.
+Based on the rules from https://www.reddit.com/r/EDH/comments/1mz2y6o/edh_variant_advanced_kingdoms_casual_commander/ 
 
 ## Install & run
 
