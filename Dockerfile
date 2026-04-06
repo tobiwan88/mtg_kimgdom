@@ -8,4 +8,4 @@ RUN uv sync --no-dev --no-editable
 
 EXPOSE 5001
 
-CMD ["uv", "run", "mtg-kingdom"]
+CMD ["uv", "run", "gunicorn", "mtg_kimgdom.app:app", "--bind", "0.0.0.0:5001", "--workers", "2"]
